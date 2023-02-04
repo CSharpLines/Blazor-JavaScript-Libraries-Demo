@@ -8,6 +8,25 @@ Welcome to your new app.
 
 <button @onclick=AddNotification>Add Notification</button>
 
+<div class="box-wrapper">
+    @{
+        foreach (var document in DatabaseContext.Documents)
+        {
+            <DocumentBox
+                Model="document">
+            </DocumentBox>
+        }
+    }
+</div>
+
+<style>
+    .box-wrapper {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
 @code {
     public void AddNotification()
     {
