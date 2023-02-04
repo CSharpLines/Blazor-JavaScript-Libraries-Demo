@@ -1,4 +1,5 @@
 ﻿@page "/editdocument/{Id:int}"
+@using JSInterpDemo.JavascriptComponents.Quill;
 @using JSInterpDemo.Models;
 
 @if (Model == null)
@@ -11,7 +12,14 @@
     <input @bind="Model.Title" />
 </div>
 <div>
-    <textarea @bind="Model.PageContent"></textarea>
+@*    <textarea @bind="Model.PageContent"></textarea>*@
+        <QuillRichText
+            Theme="QuillThemeType.Snow"
+            IsReadOnly="false"
+            PlaceHolder="Type text"
+            OldContent="@Model.PageContent"
+            OnTextChanged="(value => Model.PageContent = value)">
+        </QuillRichText>
 </div>
 
 <style>
@@ -29,5 +37,10 @@
         await base.OnInitializedAsync();
 
         Model ??= DatabaseContext.Documents.FirstOrDefault(a => a.Id == Id);
+    }
+
+    public async Task SetPageContent(string newContent)
+    {
+        Model.PageContent = newContent;
     }
 }

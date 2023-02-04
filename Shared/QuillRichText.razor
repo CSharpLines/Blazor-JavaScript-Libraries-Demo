@@ -1,0 +1,44 @@
+﻿@using JSInterpDemo.JavascriptComponents.Quill;
+
+@inject IJSRuntime JSRuntime
+
+<div @ref="EditorWrapper">
+
+</div>
+
+@code {
+    public ElementReference EditorWrapper { get; set; }
+    public DotNetObjectReference<QuillRichText> ObjectReference { get; set; }
+    [Parameter] public string PlaceHolder { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; }
+    [Parameter] public QuillThemeType Theme { get; set; }
+    [Parameter] public string OldContent { get; set; }
+    [Parameter] public Action<string> OnTextChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        ObjectReference ??= DotNetObjectReference.Create(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(!firstRender) return;
+
+        await JSRuntime.InvokeVoidAsync("initQuillRazorComponent", ObjectReference, EditorWrapper, Theme.ToString().ToLower(), PlaceHolder, IsReadOnly, OldContent);
+    }
+
+    [JSInvokable]
+    public async Task TextWasChanged(string changedText)
+    {
+        OnTextChanged.Invoke(changedText);
+    }
+
+    public void Dispose()
+    {
+        ObjectReference?.Dispose();
+    }
+}
