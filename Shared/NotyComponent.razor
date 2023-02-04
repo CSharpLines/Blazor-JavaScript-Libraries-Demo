@@ -1,0 +1,28 @@
+﻿@using JSInterpDemo.JavascriptComponents.Noty;
+@using JSInterpDemo.Models;
+
+@inject IJSRuntime JSRuntime
+
+
+@code {
+    [Parameter] public Notification Model { get; set; }
+    [Parameter] public NotyPositionType Position { get; set; }
+    [Parameter] public int TimeoutInMs { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender) return;
+
+        // initialise our javascript
+        await JSRuntime.InvokeVoidAsync("initNotyRazorComponent", Model.Text, Model.Type.ToString(), Position.ToString(), TimeoutInMs);
+
+        Model.DateShown = DateTime.Now;
+
+        var databaseEntity = DatabaseContext.Notifications.FirstOrDefault(a => a == Model);
+
+        if (databaseEntity == null) return;
+        databaseEntity.DateShown = Model.DateShown;
+    }
+}

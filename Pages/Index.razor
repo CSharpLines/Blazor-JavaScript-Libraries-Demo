@@ -1,7 +1,22 @@
 ﻿@page "/"
+@using JSInterpDemo.JavascriptComponents.Noty;
+@using JSInterpDemo.Models;
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button @onclick=AddNotification>Add Notification</button>
+
+@code {
+    public void AddNotification()
+    {
+        DatabaseContext.Notifications.Add(new Notification
+        {
+            Text = $"Notifcation Test {DatabaseContext.Notifications.Count}",
+            Type = NotyAlertType.success,
+        });
+
+        StateHasChanged();
+    }
+}
