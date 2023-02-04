@@ -18,7 +18,8 @@
             IsReadOnly="false"
             PlaceHolder="Type text"
             OldContent="@Model.PageContent"
-            OnTextChanged="(value => Model.PageContent = value)">
+            Model="Model"
+            BindProperty="@nameof(Model.PageContent)">
         </QuillRichText>
 </div>
 
@@ -37,10 +38,5 @@
         await base.OnInitializedAsync();
 
         Model ??= DatabaseContext.Documents.FirstOrDefault(a => a.Id == Id);
-    }
-
-    public async Task SetPageContent(string newContent)
-    {
-        Model.PageContent = newContent;
     }
 }

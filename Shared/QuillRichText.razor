@@ -13,7 +13,8 @@
     [Parameter] public bool IsReadOnly { get; set; }
     [Parameter] public QuillThemeType Theme { get; set; }
     [Parameter] public string OldContent { get; set; }
-    [Parameter] public Action<string> OnTextChanged { get; set; }
+    [Parameter] public object Model { get; set; }
+    [Parameter] public string BindProperty { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,7 +35,7 @@
     [JSInvokable]
     public async Task TextWasChanged(string changedText)
     {
-        OnTextChanged.Invoke(changedText);
+        Model?.GetType()?.GetProperty(BindProperty)?.SetValue(Model, changedText);
     }
 
     public void Dispose()
